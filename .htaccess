@@ -1,0 +1,15 @@
+Options +FollowSymlinks
+
+Header always set X-Frame-Options "SAMEORIGIN"
+
+RewriteEngine On
+RewriteBase /
+
+RewriteRule ^api/(.+)$ api.php [NC,L,END]
+
+# Deliver the folder or file directly if it exists on the server
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+ 
+# Push every request to index.php
+RewriteRule ^(.*)$ index.php [QSA,END]

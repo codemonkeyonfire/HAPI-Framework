@@ -1,0 +1,47 @@
+##text##
+To confirm and activate your membership, please cut and paste this URL into your browser: \r\n
+\r\n 
+[[LINK]]
+\r\n
+enter the code: [[CODE]] in the provide text field of the validation page
+\r\n
+Welcome to HappyCat.\r\n
+\r\n	
+\r\n		
+Sincerely,\r\n
+HappyCat\r\n
+\r\n
+\r\n
+\r\n		
+If you have any difficulties confirming your registration, please send us an e-mail at support@ferrera-tech.com.\r\n
+\r\n	
+This e-mail was sent to you because you registered with HappyCat.\r\n
+If you did not register at HappyCat, please send an email to support@ferrera-tech.com to be removed from our database.\r\n
+
+##html##
+<html>
+	<body>
+		To confirm and activate your membership, please click on the following link (or cut and paste this URL into your browser):<br>
+		<br>		
+		<a href='[[LINK]]'>[[LINK]]</a><br>
+		<br>		
+		or<br>
+		<br>
+		enter the code: [[CODE]] in the provide text field of the validation page<br>
+		<br>		
+		Welcome to HappyCat..<br>
+		<br>		
+		<br>		
+		Sincerely,<br>
+		<br>		
+		HappyCat<br>
+		<br>
+		<br>
+		<br>		
+		If you have any difficulties confirming your registration, please send us an e-mail at support@ferrera-tech.com.<br>
+		<br>		
+		This e-mail was sent to you because you registered with HappyCat.<BR>
+		If you did not register at HappyCat, please send an email to support@ferrera-tech.com to be removed from our database..<br>
+		<br>		
+	</body>
+</html>

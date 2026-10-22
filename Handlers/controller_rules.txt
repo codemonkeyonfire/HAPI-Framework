@@ -1,0 +1,343 @@
+- files here know of database structure for their specific task (mainly one table per handler).
+- database structure is known, data content is not known. (cares about what type of bottle, does not care about what type of liquid is stored.)
+- 1 to 1 database table to handler file unless there is a table normalized on a 1 to 1 basis (as long as secondary table is not accessed from other code)
+- can only call on hardware level files or other controllers where one-to-many relationship exisits in database
+	can only add, remove or load based on the ID of the instantiated class and data
+- site setting are set here
+- handle all processing
+- separate functions by whether they load, work on loaded object, or work independant of loaded object
+- no inheritance using IMPLEMENTS what so ever. all inheritance must be done by member object from lower tier 
+- only pass arrays as comma seperated stringsSta
+
+
+
+------------------------------------------------------- basic structure  --------------------------------------------------
+
+<?php
+ /*************************************************************************
+ * 
+ *  (c)2011 Carlos Ferrera
+ *  All Rights Reserved.
+ * 
+ * NOTICE:  
+ * Dissemination of this information or reproduction of this material
+ * is strictly forbidden unless prior written permission is obtained
+ * from Carlos Ferrera.
+ *
+ * Email: irondogg@gmail.com
+ */
+ 
+require_once("BaseHandler.php");
+ 
+class {{TABLENAME}}Handler extends BaseHandler
+{
+	public function __construct($DATABASE, $SETTINGS="")
+	{
+		$this->DB_TABLE = "{{TABLENAME}}";								// set table here, parent will not set it
+		parent::__construct($DATABASE, $SETTINGS);
+	}
+	
+//  *****************************************************************************************************************	
+//		CUSTOM LOAD FUNCTIONS
+
+//  *****************************************************************************************************************
+//		SET ATTIBUTES
+
+//  *****************************************************************************************************************	
+//		GET ATTIBUTES	
+
+//  *****************************************************************************************************************
+//	functions not using loaded object
+
+}
+
+
+abstract class BaseHandler
+{
+	protected $objDB;
+	protected $objSETTINGS;
+	protected $DB_TABLE;
+	protected $arrRECORD_WORKBENCH;
+	protected $arrRECORDS;					// only used as a buffer
+	protected $numINDEX;
+	protected $numCOUNT;
+	protected $numPAGE;
+	protected $numPER_PAGE;
+	protected $numTOTAL;
+	protected $numTOTAL_PAGES;
+	protected $SORT_BY;
+	protected $SORT_DIRC;	
+	
+	public function __construct($DATABASE, $SETTINGS="")
+	{
+		//  set static settings here 
+		//$this->DB_TABLE = $SETTINGS->Get_Value("DATABASE:DB_TABLE");
+		
+		$this->objDB = $DATABASE;
+		$this->objSETTINGS = $SETTINGS;
+		
+		$this->numCOUNT = 0;
+		$this->SORT_BY = "ID";
+		$this->SORT_DIRC = "DESC";	
+		$this->STATE = "empty";		
+	}	
+	
+    public function __toString()
+    {
+        return $this->STATE;
+    }	
+	
+	public function __invoke($ACTION)
+	{
+		switch($ACTION)
+		{
+			case "dump":
+				unset($this->arrRECORD_WORKBENCH);
+				unset($this->arrRECORDS);
+				$this->STATE = "empty";	
+				break;
+		
+		}
+	}
+	
+	public function Load($ID)
+	{
+		$strSQL = "SELECT * FROM $this->DB_TABLE WHERE ID = $ID";
+		$this->objDB->Query($strSQL);		
+
+		$arrTEMP = $this->objDB->Fetch_Arrays();	
+		
+		$this->arrRECORD_WORKBENCH = $arrTEMP[0];		
+		
+		$this->numINDEX = 0;
+		$this->numCOUNT = 0;
+		
+		$this->STATE = "loaded";	
+		
+		//print_r($this->arrRECORD_WORKBENCH);
+		//die();
+	}	
+
+	public function Load_All()
+	{
+		$arrTEMP = array();
+		$strSQL = "SELECT * FROM $this->DB_TABLE ORDER BY $this->SORT_BY $this->SORT_DIRC";
+		$this->objDB->Query($strSQL);		
+
+		$arrTEMP = $this->objDB->Fetch_Arrays();	
+		
+		$this->arrRECORDS = $arrTEMP;	
+		$this->arrRECORD_WORKBENCH = $arrTEMP[0];			
+		
+		$this->numINDEX = 0;
+		$this->numCOUNT = count($arrTEMP);
+		
+		$this->STATE = "loaded";
+		
+		return $this->objDB->Get_NumRows();
+	}
+
+	public function Load_Page($LIMIT=0, $LAST='')
+	{
+		$arrTEMP = array();
+		
+		$optLIMIT = ($LIMIT>0)?"LIMIT $LAST, $LIMIT":"";
+		
+		$strSQL = "SELECT * FROM $this->DB_TABLE ORDER BY $this->SORT_BY $this->SORT_DIRC $optLIMIT";
+		$this->objDB->Query($strSQL);		
+
+		$arrTEMP = $this->objDB->Fetch_Arrays();	
+		
+		$this->arrRECORDS = $arrTEMP;	
+		$this->arrRECORD_WORKBENCH = $arrTEMP[0];			
+		
+		$this->numINDEX = 0;
+		$this->numCOUNT = count($arrTEMP);
+		
+		$this->STATE = "loaded";
+		
+		return $this->objDB->Get_NumRows();
+	}	
+	
+	public function Load_For($FIELD, $IDs)
+	{
+		$arrTEMP = array();
+
+		$strSQL = "SELECT * FROM $this->DB_TABLE WHERE $FIELD IN ($IDs) ORDER BY $this->SORT_BY $this->SORT_DIRC";
+		$this->objDB->Query($strSQL);		
+
+		$arrTEMP = $this->objDB->Fetch_Arrays();	
+		
+		$this->arrRECORDS = $arrTEMP;	
+		$this->arrRECORD_WORKBENCH = $arrTEMP[0];			
+		
+		$this->numINDEX = 0;
+		$this->numCOUNT = count($arrTEMP);
+		
+		$this->STATE = "loaded";
+		
+		return $this->objDB->Get_NumRows();		
+	}		
+	
+	public function Search($MATCH='ALL', $DEBUG=false)
+	{
+		$OPR = ($MATCH=="ANY")?"OR":"AND";
+	
+		foreach ($this->arrRECORD_WORKBENCH as $KEY => $VAL)	
+		{
+			$arrTEMP[] = "$KEY LIKE '$VAL'";
+		}
+		
+		$strOPT = implode(" $OPR ", $arrTEMP);
+		
+		$strSQL = "SELECT * FROM $this->DB_TABLE WHERE ($strOPT) ORDER BY $this->SORT_BY $this->SORT_DIRC";
+		if($DEBUG) die("=>".$strSQL);
+		$this->objDB->Query($strSQL);		
+
+		$arrTEMP = $this->objDB->Fetch_Arrays();	
+		
+		$this->arrRECORDS = $arrTEMP;	
+		$this->arrRECORD_WORKBENCH = $arrTEMP[0];			
+		
+		$this->numINDEX = 0;
+		$this->numCOUNT = count($arrTEMP);
+		
+		$this->STATE = "loaded";
+		
+		return $this->objDB->Get_NumRows();		
+	}	
+	
+	public function Fetch()
+	{
+		if($this->numINDEX < $this->numCOUNT)
+		{
+			foreach($this->arrRECORDS[$this->numINDEX] as $KEY => $VAL)
+			{
+				$this->arrRECORD_WORKBENCH[$KEY] = $VAL;	
+			}
+			$this->numINDEX++;
+			return 1;
+		}
+		
+		return 0;	
+	}	
+		
+	public function Commit($DEBUG=0)
+	{
+		$arrKEYS = array();
+		$arrVALUES = array();
+				
+		if($this->arrRECORD_WORKBENCH["ID"])
+		{
+			foreach ($this->arrRECORD_WORKBENCH as $KEY => $VAL)	
+			{
+				if($KEY != "ID" && $KEY != "Created")
+				{
+					$VAL = htmlentities($this->objDB->Escape_Special($VAL));
+					$arrVALUES[] = "$KEY = '$VAL'";	
+				}
+			}
+			
+			$strVALUES = implode(",", $arrVALUES);
+			
+			$strSQL ="UPDATE $this->DB_TABLE SET $strVALUES WHERE ID = ".$this->arrRECORD_WORKBENCH["ID"];
+		}else {
+			foreach ($this->arrRECORD_WORKBENCH as $KEY => $VAL)	
+			{
+				if($KEY != "ID" && $KEY != "Created")
+				{
+					$VAL = htmlentities($this->objDB->Escape_Special($VAL));
+					$arrKEYS[] = "$KEY ";	
+					$arrVALUES[] = "'$VAL' ";	
+				}
+			}
+			
+			$strKEYS = implode(",", $arrKEYS);
+			$strVALUES = implode(",", $arrVALUES);
+			
+			$strSQL ="INSERT INTO $this->DB_TABLE ($strKEYS, Created) VALUES ($strVALUES, NOW())";		
+		}
+				
+		
+		if($DEBUG)
+		{
+			echo $strSQL."<br>"; return 1;
+		}else{
+			$this->objDB->Query($strSQL);		
+		}
+		
+		if($this->objDB->Get_LastInsert())
+			$this->arrRECORD_WORKBENCH["ID"] = $this->objDB->Get_LastInsert();
+	}	
+	
+	public function Reset_Fetch()
+	{
+		$this->numINDEX = 0;
+	}
+
+	public function Dump_Arr()
+	{
+		return $this->arrRECORDS;	
+	}
+	
+	public function List_Values($KEY='ID')
+	{
+		foreach($this->arrRECORDS as $rec)
+		{
+			$arrTEMP[] = $rec[$KEY];	
+		}		
+	
+		return implode(",", $arrTEMP);
+	}	
+	
+	public function Find($FIELD, $VALUE)
+	{
+		foreach ($this->arrRECORDS as $record)
+		{
+			if ($record[$FIELD] == $VALUE) 
+			{
+				$this->arrRECORD_WORKBENCH = $record;
+				return 1;		
+			}
+		}
+		
+		return 0;
+	}		
+
+	public function Delete($VAL, $FIELD='ID')
+	{
+		$strSQL = "DELETE FROM $this->DB_TABLE WHERE $FIELD = '$VAL'";
+		$this->objDB->Query($strSQL);		
+		return 1;		
+	}		
+	
+//  *****************************************************************************************************************
+//		SET ATTIBUTES
+
+	public function Set_ID($VAL)
+	{
+		$this->arrRECORD_WORKBENCH["ID"] = $VAL;
+		return $this;
+	}	
+	
+//  *****************************************************************************************************************	
+//		GET ATTIBUTES	
+	public function Get_ID()
+	{
+		return $this->arrRECORD_WORKBENCH["ID"];
+	}	
+
+//  *****************************************************************************************************************
+//	functions not using loaded object
+
+	public function Sort_By($FIELD, $DIRC='up')
+	{
+		$this->SORT_BY = $FIELD;
+		$this->SORT_DIRC = ($DIRC=="down")?"DESC":"ASC";
+		
+	}	
+}
+?>
+
+
+?>
