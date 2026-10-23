@@ -27,11 +27,10 @@ class FooterModule extends AbstractModule
 			
 		$submittedData = $this->objRegistry->Get_Value("REQUEST:DATA");
 		$USER_ID = $this->objRegistry->Get_Value("USER:ID");
-
 				
-		$this->arrViewData["facebookURL"] = "https://www.facebook.com/s";
-		$this->arrViewData["twitterURL"] = "http://www.twitter.com/";
-		$this->arrViewData["linkedinURL"] = "https://www.linkedin.com/in/";
+		$this->arrViewData["facebookURL"] = $this->objRegistry->Get_Value("SITE:FACEBOOK");
+		$this->arrViewData["twitterURL"] = $this->objRegistry->Get_Value("SITE:TWITTER");
+		$this->arrViewData["linkedinURL"] = $this->objRegistry->Get_Value("SITE:LINKEDIN");
 			
 	}
 	

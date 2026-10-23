@@ -32,7 +32,7 @@
 	    if($bit) echo "The file $modulePath exists<br>";
 	    
 	    require($modulePath);
-	    $mainModCons = $mod."Module";
+	    $mainModCons = "\\Modules\\{$app}\\{$mod}Module";
 	} else {
 	    if($bit) echo "The file $modulePath does not exist<br>";
 	    
@@ -42,14 +42,13 @@
 	        if($bit) echo "The file $modulePath exists<br>";
 	        
 	        require($modulePath);
-	        $mainModCons = ucfirst($app).ucfirst($mod)."Module";
+	        $mainModCons = "\\".ucfirst($app).ucfirst($mod)."Module";
 	    } else {
 	        echo "The file $modulePath does not exist<br>";
 	        die("ERROR: module file not found");
 	    }
 	}	
-	
-	
+
 	$mainModule = new $mainModCons($objRegistry, $objDatabase);
 
 	$mainModule->run();

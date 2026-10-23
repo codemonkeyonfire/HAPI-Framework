@@ -28,13 +28,14 @@ class HeaderModule extends AbstractModule
 		$submittedData = $this->objRegistry->Get_Value("REQUEST:DATA");
 		$USER_ID = $this->objRegistry->Get_Value("USER:ID");
 		$USERNAME = $this->objRegistry->Get_Value("USER:USERNAME");
-	
-		//$this->arrViewData["title"] = $this->objRegistry->Get_Value("SITE:NAME");		
+
 		$this->arrViewData["logo"] =  "/images/".$this->objRegistry->Get_Value("SITE:LOGO");
 		
-				
-		$this->arrViewData["features"][] = ["icon" => "phone-alt", "text" => "1(123)123-1234", "url" => "tel:+1(123)123-1234"];
-		$this->arrViewData["features"][] = ["icon" => "envelope", "text" => "test@test.com", "url" => "mailto:test@test.com"];
+		$email = $this->objRegistry->Get_Value("SITE:EMAIL");
+		$phone = $this->objRegistry->Get_Value("SITE:PHONE");
+		[$areacode, $sector, $zone] = explode("-", $phone);
+		$this->arrViewData["features"][] = ["icon" => "phone-alt", "text" => "1({$areacode}){$sector}-{$zone}", "url" => "tel:+1({$areacode}){$sector}-{$zone}"];
+		$this->arrViewData["features"][] = ["icon" => "envelope", "text" => $email, "url" => "mailto:{$email}"];
 
 		
 	}

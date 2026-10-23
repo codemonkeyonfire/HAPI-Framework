@@ -35,7 +35,6 @@ if($bit){ require("Modules/Utils/m_StartDebug.php");}
         require("Modules/Utils/m_EndDebug.php");
     }
 ?>
-		<?php require("Modules/Layout/m_Footer.php"); ?>
 		<?php $modScriptImport->display(["output" => "js", "location" => "footer"]); ?>
 	</body>
 </html>

@@ -1,22 +1,19 @@
 <?php
-require("Modules/Layout/m_Logo.php");
-$logoModule = new LogoModule($objRegistry, $objDatabase);
+
+$logoModule = new \Modules\Layout\LogoModule($objRegistry, $objDatabase);
 $logoModule->run();
 
-require("Modules/Layout/m_Header.php");
-$headerModule = new HeaderModule($objRegistry, $objDatabase);
+$headerModule = new \Modules\Layout\HeaderModule($objRegistry, $objDatabase);
 $headerModule->run();
 
-require("Modules/Navigation/m_NavMenu.php");
-$mainMenuModule = new NavMenuModule($objRegistry, $objDatabase);
+$mainMenuModule = new \Modules\Navigation\NavMenuModule($objRegistry, $objDatabase);
 $mainMenuModule->run(["menu" => "public"]);
 
-$logonMenuModule = new NavMenuModule($objRegistry, $objDatabase);
+$logonMenuModule = new \Modules\Navigation\NavMenuModule($objRegistry, $objDatabase);
 $tmp = ($objRegistry->Get_Value("USER:USERNAME")=="guest")?"Dashboard":$objRegistry->Get_Value("USER:USERNAME");
 $logonMenuModule->run(["menu" => "logon", "displayText" => $tmp]);
 
-require("Modules/Layout/m_Footer.php");
-$footerModule = new FooterModule($objRegistry, $objDatabase);
+$footerModule = new \Modules\Layout\FooterModule($objRegistry, $objDatabase);
 $footerModule->run();
 
 

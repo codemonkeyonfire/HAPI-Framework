@@ -29,8 +29,6 @@ class InitModule extends AbstractModule
 	
 	public function run($PARAMETERS="")
 	{		
-		//session_start();	
-
 		ob_start();
 	
 		date_default_timezone_set('America/Los_Angeles');	
@@ -38,31 +36,33 @@ class InitModule extends AbstractModule
 		$SERVER = $_SERVER['HTTP_HOST'];
 		
 		$basepath = "/";
+		
+		$sitename = "HAPI Framework";
+		$protocol = "https://";
+		
+		$siteEmail = "";
+		$sitePhone = "";
+		$siteFacebook = "";
+		$siteTwitter = "";
+		$siteLinkedin = "";
 	
 		switch ($SERVER)
 		{
-		    case "":
-		        $DB["Server"] = "";
-		        $DB["User"] = "";
-		        $DB["Password"] = "";
-		        $DB["Database"] = "";
+		    case "my.website.com":
+		        $DB["Server"] = "192.168.0.1";
+		        $DB["User"] = "test";
+		        $DB["Password"] = "changeme";
+		        $DB["Database"] = "hapi";
 		        
-		        $sitename = "";
+		        $sitename = "website.com";
 		        $protocol = "https://";
-		        break;
-			default:
-				//	DATABASE settings
-				$DB["Server"] = "localhost";
-				$DB["User"] = "";
-				$DB["Password"] = "";
-				$DB["Database"] = "";	
 				
-				$sitename = "";
-				$basepath = "";
-				$protocol = "https://";
-							
-								//  SITE settings
-				break;				
+				$siteEmail = "contact@website.com";
+				$sitePhone = "123-123-1234";
+				$siteFacebook = "https://www.facebook.com/website";
+				$siteTwitter = "http://www.twitter.com/website";
+				$siteLinkedin = "https://www.linkedin.com/in/website";
+		        break;
 		}			
 		
 				
@@ -112,7 +112,7 @@ class InitModule extends AbstractModule
 		$this->objRegistry->Set_Value("DATABASE:PASSWORD", $DB["Password"]);
 		$this->objRegistry->Set_Value("DATABASE:DATABASE", $DB["Database"]);
 		
-		//$this->objRegistry->Set_Value("SITE:NAME", $sitename);
+		$this->objRegistry->Set_Value("SITE:NAME", $sitename);
 		$this->objRegistry->Set_Value("SITE:BASE_PATH", $basepath);
 				
 		$url = $_SERVER["REQUEST_SCHEME"]."://".$_SERVER["HTTP_HOST"].$basepath;
@@ -129,19 +129,25 @@ class InitModule extends AbstractModule
 		$this->objRegistry->Set_Value("SITE:HOSTNAME", $_SERVER['HTTP_HOST']);
 		$this->objRegistry->Set_Value("SITE:SCRIPTNAME", $_SERVER['SCRIPT_NAME']);
 		$this->objRegistry->Set_Value("SITE:PORT", "");
-		$this->objRegistry->Set_Value("SITE:EMAIL", "services@test.com");
+		
+		$this->objRegistry->Set_Value("SITE:EMAIL", $siteEmail);
+		$this->objRegistry->Set_Value("SITE:PHONE", $sitePhone);
+		$this->objRegistry->Set_Value("SITE:FACEBOOK", $siteFacebook);
+		$this->objRegistry->Set_Value("SITE:TWITTER", $siteTwitter);
+		$this->objRegistry->Set_Value("SITE:LINKEDIN", $siteLinkedin);
 		
 		$this->objRegistry->Set_Value("MODULES:NO_AUTH", ["api/*", "User/LogIn"]);
 				
 		$this->objRegistry->Set_Value("SMTP:HOST", "smtp.email.com");
-			
-		$this->objRegistry->Set_Value("SMTP:USERNAME", "");
-		$this->objRegistry->Set_Value("SMTP:PASSWORD", "!h0lyD0nk3y");
+				
+		$this->objRegistry->Set_Value("SMTP:USERNAME", "services@email.com");
+		$this->objRegistry->Set_Value("SMTP:PASSWORD", "changeme");
 		$this->objRegistry->Set_Value("SMTP:PORT", "465");
 		//$this->objRegistry->Set_Value("SMTP:PORT", "587");
         
-		$this->objRegistry->Set_Value("ENCRYPT:HASH_PEPPER", "sad434FSDA34GG3G54G5");
+		$this->objRegistry->Set_Value("ENCRYPT:HASH_PEPPER", "kj54634kj6h45k6h34k");
 				
+		$this->objRegistry->Set_Value("UPLOADFOLDER", $document_root."repos");
 		
 		$this->objRegistry->Set_Value("LOGIN:BACKGROUND", $url."/images/bg/clouds.jpg");
 		$this->objRegistry->Set_Value("LOGIN:LOGO", $url."/images/logo_white.png");
@@ -151,10 +157,9 @@ class InitModule extends AbstractModule
 		$this->objRegistry->Set_Value("SITE:DEBUG_MODE", $DEBUG_MODE);
 			
 		$this->objRegistry->Add_CSS("/3rdParty/bootstrap/css/bootstrap.min.css");
-
 		$this->objRegistry->Add_CSS("/3rdParty/fontawesome-css/css/all.min.css");
 		$this->objRegistry->Add_CSS("/css/style.css");
-				
+		
 		$this->objRegistry->Add_JS("/3rdParty/jquery.js", "header");
 		$this->objRegistry->Add_JS("/3rdParty/bootstrap/js/bootstrap.bundle.min.js");
 		

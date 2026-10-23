@@ -1,14 +1,11 @@
 <?php
-require("Modules/Layout/m_Logo.php");
-$logoModule = new LogoModule($objRegistry, $objDatabase);
+$logoModule = new \Modules\Layout\LogoModule($objRegistry, $objDatabase);
 $logoModule->run();
 
-require("Modules/Navigation/m_NavMenu.php");
-$mainMenuModule = new NavMenuModule($objRegistry, $objDatabase);
+$mainMenuModule = new \Modules\Navigation\NavMenuModule($objRegistry, $objDatabase);
 $mainMenuModule->run(["menu" => "guest"]);
 
-require("Modules/Layout/m_Footer.php");
-$footerModule = new FooterModule($objRegistry, $objDatabase);
+$footerModule = new \Modules\Layout\FooterModule($objRegistry, $objDatabase);
 $footerModule->run();
 
 

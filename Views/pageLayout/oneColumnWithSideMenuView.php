@@ -1,18 +1,15 @@
 <?php
-require("Modules/Layout/m_Header.php");
-require("Modules/Navigation/m_NavMenu.php");
-require("Modules/Layout/m_Logo.php");
 
-$logoModule = new LogoModule($objRegistry, $objDatabase);
+$logoModule = new \Modules\Layout\LogoModule($objRegistry, $objDatabase);
 $logoModule->run();
 
-$mainMenuModule = new NavMenuModule($objRegistry, $objDatabase);
+$mainMenuModule = new \Modules\Navigation\NavMenuModule($objRegistry, $objDatabase);
 $mainMenuModule->run(["menu" => "main"]);
 
-$settingsMenuModule = new NavMenuModule($objRegistry, $objDatabase);
+$settingsMenuModule = new \Modules\Navigation\NavMenuModule($objRegistry, $objDatabase);
 $settingsMenuModule->run(["menu" => "settings", "displayText" => $objRegistry->Get_Value("USER:USERNAME")]);
 
-$sideMenuModule = new NavMenuModule($objRegistry, $objDatabase);
+$sideMenuModule = new \Modules\Navigation\NavMenuModule($objRegistry, $objDatabase);
 $sideMenuModule->run(["menu" => "sidemenu"]);
 
 ?>
