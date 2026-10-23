@@ -1,4 +1,4 @@
-# HAPI (Home Automation / Personal Information System)
+# HAPI PHP Framework
 
 HAPI is a PHP-based web application framework with a custom MVC-like architecture. It includes user authentication and role-based access control.
 
