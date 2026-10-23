@@ -92,16 +92,15 @@ HAPI/
 
 | Driver | Class | Purpose |
 |---|---|---|
-| `d_Mysqli.php` | `MysqliDriver` | **Primary DB driver** - MySQL/MariaDB via MySQLi with query branching, benchmarking, partitioning support |
-| `d_config.php` | `ConfigDriver` | Settings manager with DB persistence (table `Settings`) |
-| `d_MemArr.php` | `memArrDriver` | In-memory key-value store (`CATEGORY:SETTING` format) |
-| `d_cookie.php` | `CookieDriver` | Cookie-based settings storage |
-| `d_phpmailer.php` | `EmailDriver` | SMTP email via PHPMailer (active) |
-| `d_email.php` | `EmailDriver` | Native PHP `mail()` email (alternative) |
-| `d_file.php` | `FileDriver` | Filesystem operations, uploads, file listing |
-| `d_XMLText.php` | `XMLAttribute`, `XMLNode` | Lightweight XML DOM objects |
-| `d_google_calendar.php` | `Google_Calendar` | Google Calendar API integration |
-| `d_sqlite.php`, `d_sqlite3.php` | `SQLiteDriver`, `ArchiveDBDriver` | SQLite drivers (unused in current codebase) |
+| `MysqliDriver.php` | `MysqliDriver` | **Primary DB driver** - MySQL/MariaDB via MySQLi with query branching, benchmarking, partitioning support |
+| `ConfigDriver.php` | `ConfigDriver` | Settings manager with DB persistence (table `Settings`) |
+| `MemArrDriver.php` | `memArrDriver` | In-memory key-value store (`CATEGORY:SETTING` format) |
+| `CookieDriver.php` | `CookieDriver` | Cookie-based settings storage |
+| `PHPMailerDriver.php` | `EmailDriver` | SMTP email via PHPMailer (active) |
+| `EmailDriver.php` | `EmailDriver` | Native PHP `mail()` email (alternative) |
+| `FileDriver.php` | `FileDriver` | Filesystem operations, uploads, file listing |
+| `XMLTextDriver.php` | `XMLAttribute`, `XMLNode` | Lightweight XML DOM objects |
+| `SQLiteDriver.php`, `d_sqlite3.php` | `SQLiteDriver`, `ArchiveDBDriver` | SQLite drivers (unused in current codebase) |
 
 ### Handlers
 
